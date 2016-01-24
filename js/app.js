@@ -38,8 +38,8 @@ Enemy.prototype.update = function(dt) {
     if (this.x > 505) {
         this.x = this.initial_x;
 
-        if (this.x > 0) {
-            this.x = -110;
+        if (this.x > -100) {
+            this.x = this.x - 505;
         }
     }
 
