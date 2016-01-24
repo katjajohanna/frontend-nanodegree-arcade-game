@@ -12,6 +12,7 @@ var Enemy = function(x_location, y_location, speed) {
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
+    this.initial_x = x_location;
     this.x = x_location;
     this.y = y_location;
     this.speed = speed;
@@ -35,7 +36,11 @@ Enemy.prototype.update = function(dt) {
     this.x += this.speed * dt;
 
     if (this.x > 505) {
-        this.x = -110;
+        this.x = this.initial_x;
+
+        if (this.x > 0) {
+            this.x = -110;
+        }
     }
 
     this.checkCollision();
@@ -136,11 +141,26 @@ Victory.prototype.render = function() {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-allEnemies = [
-    new Enemy(block_width, y_first_road_block, 100),
-    new Enemy(0, y_second_road_block, 140),
-    new Enemy(block_width*2, y_third_road_block, 90)
-];
+allEnemies = [];
+
+for (var i = 0; i < 18; i++) {
+    x = Math.random() * 500;
+    x = x - Math.random() * 100 * i * i;
+
+    line = Math.random() * 3;
+    if (line < 1) {
+        y = y_first_road_block;
+    } else if (line < 2) {
+        y = y_second_road_block;
+    } else {
+        y = y_third_road_block;
+    }
+
+    speed = Math.random() * 100 + 100;
+
+    allEnemies.push(new Enemy(x, y, speed));
+}
+
 player = new Player();
 victory = new Victory();
 
