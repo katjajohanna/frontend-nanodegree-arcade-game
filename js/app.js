@@ -2,7 +2,8 @@ var block_width = 101,
     y_first_road_block = 60,
     y_second_road_block = 145,
     y_third_road_block = 225,
-    block_height = 83;
+    block_height = 83,
+    rocks = [];
 
 // Enemies our player must avoid
 var Enemy = function(x_location, y_location, speed) {
@@ -95,26 +96,85 @@ Player.prototype.render = function() {
 Player.prototype.handleInput = function(key) {
     switch (key) {
         case 'left':
-            if (this.x >= block_width * 1) {
+            if (this.x >= block_width * 1 && !is_rock_blocking_left(this.x, this.real_y)) {
                 this.x -= block_width;
             }
             break;
         case 'right':
-            if (this.x < block_width * 4) {
+            if (this.x < block_width * 4 && !is_rock_blocking_right(this.x, this.real_y)) {
                 this.x += block_width;
             }
             break;
         case 'up':
-            if (this.y >= 0) {
+            if (this.y >= 0 && !is_rock_blocking_top(this.x, this.real_y)) {
                 this.y -= block_height;
             }
             break;
         case 'down':
-            if (this.y <= 300) {
+            if (this.y <= 300 && !is_rock_blocking_bottom(this.x, this.real_y)) {
                 this.y += block_height;
             }
             break;
+        case 'space':
+            if (!is_rock_blocking_top(this.x, this.real_y)) {
+                rocks.push(new Rock(this.x, this.y));
+            }
+            break;
     }
+};
+
+function is_rock_blocking_top(x, y) {
+    for (var i = 0; i < rocks.length; i++) {
+        y_difference = y - rocks[i].real_y;
+
+        if (rocks[i].x == x && y_difference < 150 && y_difference > 20) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
+function is_rock_blocking_bottom(x, y) {
+    for (var i = 0; i < rocks.length; i++) {
+        y_difference = rocks[i].real_y - y;
+
+        if (rocks[i].x == x && y_difference < 150 && y_difference > 20) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
+function is_rock_blocking_left(x, y) {
+    for (var i = 0; i < rocks.length; i++) {
+        x_difference = x - rocks[i].x;
+        y_difference = rocks[i].real_y - y;
+
+        if (x_difference > 0 && x_difference <= block_width &&
+            y_difference > -20 && y_difference < 20
+        ) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
+function is_rock_blocking_right(x, y) {
+    for (var i = 0; i < rocks.length; i++) {
+        x_difference = rocks[i].x - x;
+        y_difference = rocks[i].real_y - y;
+
+        if (x_difference > 0 && x_difference <= block_width &&
+            y_difference > -20 && y_difference < 20
+        ) {
+            return true;
+        }
+    }
+
+    return false;
 };
 
 var Victory = function() {
@@ -137,6 +197,24 @@ Victory.prototype.render = function() {
     ctx.fillText(win_text, 505 / 2, this.y + this.height + 20);
     ctx.strokeText(win_text, 505 / 2, this.y + this.height + 20);
 };
+
+var Rock = function(x, y) {
+    this.sprite = 'images/Rock.png';
+    this.x = x;
+    this.y = y - 30;
+    this.initial_y = this.y;
+};
+
+Rock.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
+Rock.prototype.update = function(dt) {
+    if (this.y > this.initial_y - 55) {
+        this.y -= 80 * dt;
+        this.real_y = this.y + 65;
+    }
+}
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
@@ -172,7 +250,8 @@ document.addEventListener('keyup', function(e) {
         37: 'left',
         38: 'up',
         39: 'right',
-        40: 'down'
+        40: 'down',
+        32: 'space'
     };
 
     player.handleInput(allowedKeys[e.keyCode]);
