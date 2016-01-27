@@ -72,6 +72,7 @@ var Player = function() {
     this.y = this.initial_y;
     this.width = 70;
     this.height = 60;
+    this.win = false;
 };
 
 Player.prototype.update = function(dt) {
@@ -86,6 +87,7 @@ Player.prototype.update = function(dt) {
         allEnemies = [];
         victory.x = 2 * 101;
         victory.y = 2 * 83;
+        this.win = true;
     }
 };
 
@@ -94,6 +96,10 @@ Player.prototype.render = function() {
 };
 
 Player.prototype.handleInput = function(key) {
+    if (this.win) {
+        return;
+    }
+
     switch (key) {
         case 'left':
             if (this.x >= block_width * 1 && !is_rock_blocking_left(this.x, this.real_y)) {
