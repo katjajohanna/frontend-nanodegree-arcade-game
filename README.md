@@ -1,6 +1,13 @@
-frontend-nanodegree-arcade-game
-===============================
+# Arcade game for Front end nanodegree
 
-Students should use this [rubric](https://www.udacity.com/course/viewer/#!/c-nd001/l-2696458597/m-2687128535) for self-checking their submission.
+Player has to get across the road to the lake. On the road travel an army of bugs. A touch with a bug returns player back to beginning.
 
-For detailed instructions on how to get started, check out this [guide](https://docs.google.com/document/d/1v01aScPjSWCCWQLIpFqvg3-vXLH2e8_SZQKC8jNO0Dc/pub?embedded=true).
+## Instructions
+
+Use arrow keys to move the player. Shoot rocks with space bar.
+
+User cannot move through rocks. If rock is thrown on a bug, it will disappear. If there is a rock on the road, the bug will slow down to climb over it.
+
+## License
+
+MIT
